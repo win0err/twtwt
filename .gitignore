@@ -1,0 +1,10 @@
+.vscode/
+.idea/
+
+.DS_Store
+*~
+
+.build/
+twtxt2
+twtwt
+config.ini
