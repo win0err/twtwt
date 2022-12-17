@@ -205,7 +205,7 @@ static list_node_t *merge_nodes(list_t * list, const list_node_t * node1, const 
 		min->data = node2->data;
 		min->next = node2->next;
 
-		list_node_t *tail = min;
+		list_node_t *tail = min->next;
 
 		while (tail != NULL) {
 			tail = tail->next;
