@@ -3,10 +3,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "commands.h"
 #include "config.h"
 #include "quickstart.h"
 #include "twtwt.h"
 #include "utils.h"
+
+#define QS_MESSAGE \
+	"This wizard will generate a configuration file and create \n"       \
+	"a twtxt.txt file if it doesn't exist. You can change these \n"      \
+	"settings later using `" PROGNAME " " COMMAND_CONFIG "` command. \n" \
+	"\n"                                                                 \
+	"Source code and documentation on GitHub: \n"                        \
+	"https://github.com/win0err/twtwt\n"
 
 #define QS_BUFSIZE 2048
 
@@ -105,6 +114,8 @@ int run_quickstart()
 {
 	PRINT_HEADER();
 
+	puts(QS_MESSAGE);
+
 	config_t *config = config_new();
 
 	get_nick(config);
@@ -122,11 +133,19 @@ int run_quickstart()
 	printf("config file created at %s\n", config_location);
 	free(config_location);
 
-	if (create_twtxt_file(config) != EXIT_SUCCESS) {
-		return EXIT_FAILURE;
+	char *twtxt_path = expand_homedir(config->twtfile);
+
+	if (is_file_exists(twtxt_path)) {
+		printf("twtxt file already exists at %s\n\n", twtxt_path);
+	} else {
+		if (create_twtxt_file(config) != EXIT_SUCCESS) {
+			return EXIT_FAILURE;
+		}
+
+		printf("twtxt file created at %s\n\n", twtxt_path);
 	}
 
-	printf("twtxt file created at %s\n\n", config->twtfile);
+	free(twtxt_path);
 
 	config_free(config);
 
