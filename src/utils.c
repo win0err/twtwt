@@ -19,7 +19,7 @@ char *trim(char *str)
 	size_t beg = strspn(str, " \t\n");
 	size_t len = strlen(str);
 
-	// if all string contains whitespaces only
+	// if string contains whitespaces only
 	if (beg == len) {
 		*str = '\0';
 		return str;

@@ -7,7 +7,7 @@
 
 void list_node_print(list_node_t * node, void (*print_data)(void *node_data))
 {
-	if(print_data != NULL) {
+	if (print_data != NULL) {
 		print_data(node->data);
 		printf(" :: ");
 	}
@@ -17,7 +17,7 @@ void list_node_print(list_node_t * node, void (*print_data)(void *node_data))
 
 void list_print(list_t * list, void (*print_data)(void *node_data))
 {
-	printf("list_t:  %p\n",(void *) list);
+	printf("list_t:  %p\n", (void *) list);
 	printf("head:    %p\n", (void *) list->head);
 	printf("tail:    %p\n", (void *) list->tail);
 	printf("count:   %ld\n", list->count);
@@ -81,8 +81,8 @@ void list_reverse(list_t * list)
 
 void list_node_free(list_node_t * node, void (*free_data)(void *node_data))
 {
-	if( (*free_data) != NULL && node != NULL) {
-		(*free_data)(node->data);
+	if ((*free_data) != NULL && node != NULL) {
+		 (*free_data)(node->data);
 	}
 
 	if (node != NULL && node->data != NULL) {

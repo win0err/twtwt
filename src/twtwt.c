@@ -1,3 +1,4 @@
+#include <getopt.h>
 #include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,13 +12,22 @@
 #include "quickstart.h"
 #include "utils.h"
 
+#define PRINT_PROGRAM_VERSION() printf("%s, version %s\n", PROGNAME, VERSION);
 #define PRINT_PROGRAM_USAGE() PRINT_HEADER(); PRINT_COMMANDS();
 
 #define PRINT_COMMAND_USAGE(cmd, args, errmsg)                  \
 	fprintf(stderr, "usage: " PROGNAME " %s %s\n", cmd, args);  \
 	fprintf(stderr, "error: %s\n", errmsg);
 
-int main(int argc, const char **argv)
+static struct option long_options[] = {
+	{"help", no_argument, NULL, 'h'},
+	{"version", no_argument, NULL, 'v'},
+	{"limit", required_argument, NULL, 'l'},
+	{"page", required_argument, NULL, 'p'},
+	{NULL, 0, NULL, 0}
+};
+
+int main(int argc, char *const *argv)
 {
 	if (getenv("HOME") == NULL) {
 		fprintf(stderr, "error: $HOME environment variable must be set\n");
@@ -30,30 +40,45 @@ int main(int argc, const char **argv)
 
 	free(config_location);
 
-	if (argc == 1) {
-		if (!is_config_exists)
-			return run_quickstart();
+	int limit = 20, page = 1;
 
-		PRINT_PROGRAM_USAGE();
+	int c;
 
-		return EXIT_SUCCESS;
-	} else if (argc == 2) {
-		if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) {
+	// int option_index = 0;
+	while ((c = getopt_long(argc, argv, "hvl:p:", long_options, NULL)) != -1) {
+		switch (c) {
+		case 'h':
 			PRINT_PROGRAM_USAGE();
-
 			return EXIT_SUCCESS;
-		}
-
-		if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")) {
-			printf("%s, version %s\n", PROGNAME, VERSION);
-
+		case 'v':
+			PRINT_PROGRAM_VERSION();
 			return EXIT_SUCCESS;
+		case 'l':
+			if (atoi(optarg) >= 0)	// 0 -- print all
+				limit = atoi(optarg);
+			break;
+		case 'p':
+			if (atoi(optarg) > 0)
+				page = atoi(optarg);
+			break;
+		case '?':
+			break;
+		default:
+			fprintf(stderr, "error: getopt returned character code 0%o\n", c);
 		}
-
 	}
 
-	if (!is_config_exists)
+	if (optind >= argc) {
+		if (is_config_exists) {
+			PRINT_PROGRAM_USAGE();
+			return EXIT_SUCCESS;
+		}
+
 		return run_quickstart();
+	}
+
+	const char *command = argv[optind++];
+	int params_count = argc - optind;
 
 	int rc = EXIT_SUCCESS;
 
@@ -65,46 +90,46 @@ int main(int argc, const char **argv)
 		return EXIT_FAILURE;
 	}
 
-	if (!strcmp(argv[1], COMMAND_CONFIG)) {
+	if (!strcmp(command, COMMAND_CONFIG)) {
 		rc = command_config();
-	} else if (!strcmp(argv[1], COMMAND_TWEET)) {
-		if (argc < 3) {
+	} else if (!strcmp(command, COMMAND_TWEET)) {
+		if (params_count != 1) {
 			PRINT_COMMAND_USAGE(COMMAND_TWEET, "<text>", "text cannot be empty");
 
 			rc = EXIT_FAILURE;
 		} else {
-			rc = command_tweet(argv[2], config);
+			rc = command_tweet(argv[optind], config);
 		}
-	} else if (!strcmp(argv[1], COMMAND_FOLLOWING)) {
+	} else if (!strcmp(command, COMMAND_FOLLOWING)) {
 		rc = command_following(config->following);
-	} else if (!strcmp(argv[1], COMMAND_FOLLOW)) {
-		if (argc < 4) {
+	} else if (!strcmp(command, COMMAND_FOLLOW)) {
+		if (params_count != 2) {
 			PRINT_COMMAND_USAGE(COMMAND_FOLLOW, "<nick> <url>", "nick and url cannot be empty");
 
 			rc = EXIT_FAILURE;
 		} else {
-			rc = command_follow(argv[2], argv[3], config);
+			rc = command_follow(argv[optind], argv[optind + 1], config);
 		}
-	} else if (!strcmp(argv[1], COMMAND_UNFOLLOW)) {
-		if (argc < 3) {
+	} else if (!strcmp(command, COMMAND_UNFOLLOW)) {
+		if (params_count != 1) {
 			PRINT_COMMAND_USAGE(COMMAND_UNFOLLOW, "<nick>", "nick cannot be empty");
 
 			rc = EXIT_FAILURE;
 		} else {
-			rc = command_unfollow(argv[2], config);
+			rc = command_unfollow(argv[optind], config);
 		}
-	} else if (!strcmp(argv[1], COMMAND_TIMELINE)) {
-		rc = command_timeline(config);
-	} else if (!strcmp(argv[1], COMMAND_VIEW)) {
-		if (argc < 3) {
+	} else if (!strcmp(command, COMMAND_TIMELINE)) {
+		rc = command_timeline(config, page, limit);
+	} else if (!strcmp(command, COMMAND_VIEW)) {
+		if (params_count != 1) {
 			PRINT_COMMAND_USAGE(COMMAND_VIEW, "<nick/url>", "nickname or feed url cannot be empty");
 
 			rc = EXIT_FAILURE;
 		} else {
-			rc = command_view(argv[2], config);
+			rc = command_view(argv[optind], config, page, limit);
 		}
 	} else {
-		fprintf(stderr, "error: %s: no such command or option\n", argv[1]);
+		fprintf(stderr, "error: %s: no such command or option\n", command);
 
 		rc = EXIT_FAILURE;
 	}

@@ -8,7 +8,7 @@
 #include "twtwt.h"
 #include "utils.h"
 
-#define BUFSIZE 2048
+#define QS_BUFSIZE 2048
 
 extern char *strdup(const char *);
 
@@ -16,10 +16,10 @@ static void get_nick(config_t * config)
 {
 	char *os_user = getenv("USER");
 	char *default_val = strdup((os_user == NULL) ? "anonymous" : os_user);
-	char *nick = calloc(BUFSIZE, sizeof(char));
+	char *nick = calloc(QS_BUFSIZE, sizeof(char));
 
 	printf("your nickname [%s]: ", default_val);
-	fgets(nick, BUFSIZE, stdin);
+	fgets(nick, QS_BUFSIZE, stdin);
 
 	nick = trim(nick);
 
@@ -44,10 +44,10 @@ static void get_twtfile(config_t * config)
 	default_val = (char *) realloc(default_val, len + strlen("/twtxt.txt") + 1);
 	strcat(default_val, "/twtxt.txt");
 
-	char *twtfile = calloc(BUFSIZE, sizeof(char));
+	char *twtfile = calloc(QS_BUFSIZE, sizeof(char));
 
 	printf("local location of your twtxt.txt file [%s]: ", default_val);
-	fgets(twtfile, BUFSIZE, stdin);
+	fgets(twtfile, QS_BUFSIZE, stdin);
 	twtfile = trim(twtfile);
 
 	if (strlen(twtfile) == 0) {
@@ -69,10 +69,10 @@ static void get_twturl(config_t * config)
 
 	snprintf(default_val, len, "%s%s", domain, filename);
 
-	char *twturl = calloc(BUFSIZE, sizeof(char));
+	char *twturl = calloc(QS_BUFSIZE, sizeof(char));
 
 	printf("url of your twtxt.txt on the web [%s]: ", default_val);
-	fgets(twturl, BUFSIZE, stdin);
+	fgets(twturl, QS_BUFSIZE, stdin);
 	twturl = trim(twturl);
 
 	if (strlen(twturl) == 0) {

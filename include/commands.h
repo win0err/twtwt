@@ -20,8 +20,8 @@ int command_config();
 int command_following(list_t * following);
 int command_follow(const char *nick, const char *url, config_t * config);
 int command_unfollow(const char *nick, config_t * config);
-int command_timeline(config_t * config);
-int command_view(const char *url_or_nick, config_t * config);
+int command_timeline(config_t * config, int page, int limit);
+int command_view(const char *url_or_nick, config_t * config, int page, int limit);
 int command_tweet(const char *tweet, config_t * config);
 
 #endif

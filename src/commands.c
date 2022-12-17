@@ -118,16 +118,18 @@ int command_unfollow(const char *nick, config_t * config)
 	return config_save(config);
 }
 
-int command_timeline(config_t * config)
+int command_timeline(config_t * config, int page, int limit)
 {
 	int fetched_count;
+
+	// TODO: show user's tweets in timeline
 
 	// TODO: retcodes & memory leaks
 	list_t **tweets = fetch_timeline_tweets(config, &fetched_count);
 	list_t *timeline = list_merge_k_sorted(fetched_count, tweets, tweets_comparator_asc);
 
 	if (timeline != NULL) {
-		twtxt_display_tweets(timeline);
+		twtxt_display_tweets(timeline, page, limit);
 		list_free(timeline, tweet_free);
 	}
 
@@ -138,7 +140,7 @@ int command_timeline(config_t * config)
 	return EXIT_SUCCESS;
 }
 
-int command_view(const char *url_or_nick, config_t * config)
+int command_view(const char *url_or_nick, config_t * config, int page, int limit)
 {
 	user_t *found_user = NULL;
 	int is_user_found = 0;
@@ -165,7 +167,7 @@ int command_view(const char *url_or_nick, config_t * config)
 	list_t *tweets = fetch_user_tweets(found_user, config);
 
 	if (tweets != NULL) {
-		twtxt_display_tweets(tweets);
+		twtxt_display_tweets(tweets, page, limit);
 		list_free(tweets, tweet_free);
 	}
 
