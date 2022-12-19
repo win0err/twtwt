@@ -43,7 +43,7 @@ static void get_nick(config_t * config)
 
 static void get_twtfile(config_t * config)
 {
-	char *default_val = strdup(getenv("HOME"));
+	char *default_val = strdup(getenv(EHOME));
 	size_t len = strlen(default_val);
 
 	// remove trailing slash if exists

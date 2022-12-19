@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "config.h"
 #include "utils.h"
 
 #define	PATH_MAX 1024			// from xnu's sys/syslimits.h
@@ -96,7 +97,7 @@ char *expand_homedir(const char *filename)
 
 	dir += 1;					// skip ~ char
 
-	char *home = getenv("HOME");
+	char *home = getenv(EHOME);
 	char *expanded_dir = calloc(strlen(home) + strlen(dir) + 1, sizeof(char));
 	char *ptr = expanded_dir;
 
@@ -141,4 +142,26 @@ FILE *ensure_fopen(const char *filename, const char *mode)
 	free(path);
 
 	return fp;
+}
+
+char *get_config_location()
+{
+	char *config_home = getenv("XDG_CONFIG_HOME");
+	if (config_home == NULL) {
+		char *homedir = getenv(EHOME);
+#ifdef __APPLE__
+		char *subdir = "/Library/Application Support";
+#elif EPLAN9
+		char *subdir = "/lib";
+#else // UNIX
+		char *subdir = "/.config";
+#endif
+		config_home = calloc(strlen(homedir) + strlen(subdir) + 1, sizeof(char));
+		sprintf(config_home, "%s%s", homedir, subdir);
+	}
+
+	char *loc = calloc(strlen(config_home) + strlen(CONFIG_LOCATION) + 1, sizeof(char));
+	sprintf(loc, "%s%s", config_home, CONFIG_LOCATION);
+
+	return loc;
 }

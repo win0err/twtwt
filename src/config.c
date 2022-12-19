@@ -49,18 +49,6 @@ static int handler(void *cfg, const char *section, const char *key, const char *
 	return 1;
 }
 
-char *get_config_location()
-{
-	char *homedir = getenv("HOME");
-
-	size_t len = strlen(homedir) + 1 + strlen(CONFIG_LOCATION) + 1;
-	char *loc = calloc(len, sizeof(char));
-
-	snprintf(loc, len, "%s/%s", homedir, CONFIG_LOCATION);
-
-	return loc;
-}
-
 config_t *config_new()
 {
 	config_t *cfg = calloc(1, sizeof(config_t));

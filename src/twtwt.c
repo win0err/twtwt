@@ -29,7 +29,7 @@ static struct option long_options[] = {
 
 int main(int argc, char *const *argv)
 {
-	if (getenv("HOME") == NULL) {
+	if (getenv(EHOME) == NULL) {
 		fprintf(stderr, "error: $HOME environment variable must be set\n");
 
 		return EXIT_FAILURE;

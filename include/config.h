@@ -4,7 +4,7 @@
 #include "list.h"
 #include "twtwt.h"
 
-#define CONFIG_LOCATION ".config/" PROGNAME "/config.ini"
+#define CONFIG_LOCATION "/" PROGNAME "/twtwt.conf"
 
 #define LOAD_CONFIG_OK 0
 #define LOAD_CONFIG_READ_ERROR -1
@@ -26,7 +26,5 @@ int config_load(config_t * cfg);
 int config_save(config_t * cfg);
 
 void user_free(void *node_data);
-
-char *get_config_location();
 
 #endif
