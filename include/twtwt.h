@@ -16,7 +16,7 @@
         "|____|________||____|________||____| \n"            \
         "\n"                                                 \
         PROGNAME " - a client for twtxt: decentralized, \n"  \
-        "minimalist microblogging service for hackers.  \n"  \
+        "minimalist microblogging service for hackers."      \
     );
 
 #define PRINT_COMMANDS() puts(                                             \
@@ -29,7 +29,7 @@
         "  timeline  - retrieve your personal timeline \n"                 \
         "  tweet     - append a new tweet to your twtxt.txt file \n"       \
         "  unfollow  - remove an existing source from your followings \n"  \
-        "  view      - show feed of given source \n"                       \
+        "  view      - show feed of given source"                          \
     );
 
 #endif

@@ -13,7 +13,7 @@
 #include "utils.h"
 
 #define PRINT_PROGRAM_VERSION() printf("%s, version %s\n", PROGNAME, VERSION);
-#define PRINT_PROGRAM_USAGE() PRINT_HEADER(); PRINT_COMMANDS();
+#define PRINT_PROGRAM_USAGE() PRINT_HEADER(); puts(""); PRINT_COMMANDS();
 
 #define PRINT_COMMAND_USAGE(cmd, args, errmsg)                  \
 	fprintf(stderr, "usage: " PROGNAME " %s %s\n", cmd, args);  \
