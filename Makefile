@@ -1,22 +1,24 @@
-OPTI_FLAG=-O2
-CFLAGS+=-Wall -Wextra -Werror -Wno-unused-parameter $(OPTI_FLAG)
+PROGNAME=twtwt
+VERSION?=0.0.1
 
-LDFLAGS+=-lcurl -linih
+CFLAGS+=-Wall -Wextra -Werror -Wno-unused-parameter -DVERSION='"$(VERSION)"'
+LDFLAGS+=$(shell pkg-config --libs libcurl inih)
 INCLUDE+=-Iinclude
 OUTDIR=.build
 
-PROGNAME=twtwt
+PREFIX?=/usr/local
+BINDIR?=$(PREFIX)/bin
+MANDIR?=$(PREFIX)/share/man
 
-.DEFAULT_GOAL:=$(PROGNAME)
-
-SOURCES=$(shell find src -type f -name '*.c')
-HEADERS=$(shell find include -type f -name '*.h')
+SOURCES=$(sort $(wildcard src/*.c))
+HEADERS=$(sort $(wildcard include/*.h))
 OBJECTS=$(SOURCES:src/%.c=$(OUTDIR)/%.o)
 
-DEBUGFLAGS=-DDEBUG=1 -g
-ifeq ($(shell uname), Linux)
-DEBUGFLAGS+=-fsanitize=leak 
+ifeq ($(DEBUG),1)
+	override CFLAGS+=-DDEBUG=1 -g -O0
 endif
+
+all: $(PROGNAME)
 
 $(OUTDIR)/%.o: src/%.c $(HEADERS)
 	@mkdir -p $(OUTDIR)
@@ -25,9 +27,12 @@ $(OUTDIR)/%.o: src/%.c $(HEADERS)
 $(PROGNAME): $(OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
-debug: CFLAGS+=$(DEBUGFLAGS)
-debug: OPTI_FLAG=-O0
-debug: $(PROGNAME)
+install: all
+	mkdir -p $(DESTDIR)/$(BINDIR) $(DESTDIR)/$(MANDIR)
+	install -m755 $(PROGNAME) $(DESTDIR)/$(BINDIR)/$(PROGNAME)
+
+uninstall:
+	rm -f $(DESTDIR)/$(BINDIR)/$(PROGNAME)
 
 indent: $(HEADERS) $(SOURCES)
 	indent $^ && rm **/*~
@@ -35,4 +40,5 @@ indent: $(HEADERS) $(SOURCES)
 clean:
 	rm -rf $(OUTDIR) $(PROGNAME) **/*~
 
-.PHONY: indent clean debug
+.DEFAULT_GOAL=all
+.PHONY: indent clean install uninstall
