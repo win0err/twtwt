@@ -18,7 +18,6 @@
 extern char *strdup(const char *);
 extern char *strptime(const char *, const char *, struct tm *);
 extern void tzset(void);
-extern long int timezone;
 
 char *localtime_to_rfc3339_local(const struct tm *timeptr)
 {
@@ -107,5 +106,8 @@ time_t rfc3339_to_time_t(const char *formatted)
 	free(buff);
 	free(datetime);
 
-	return result != -1 ? result - gmtoff - timezone : -1;
+	time_t rawtime = time(0);
+	time_t local_tzoff = timegm(localtime(&rawtime)) - rawtime;
+
+	return result != -1 ? result - gmtoff + local_tzoff : -1;
 }

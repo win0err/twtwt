@@ -2,7 +2,7 @@ PROGNAME=twtwt
 VERSION?=0.0.1
 
 CFLAGS+=-Wall -Wextra -Werror -Wno-unused-parameter -DVERSION='"$(VERSION)"'
-LDFLAGS+=$(shell pkg-config --libs libcurl inih)
+LDFLAGS+=-lcurl -linih # $(shell pkg-config --libs libcurl inih)
 INCLUDE+=-Iinclude
 OUTDIR=.build
 
@@ -22,10 +22,10 @@ all: $(PROGNAME)
 
 $(OUTDIR)/%.o: src/%.c $(HEADERS)
 	@mkdir -p $(OUTDIR)
-	$(CC) -std=c99 -pedantic -c -o $@ $(CFLAGS) $(INCLUDE) $<
+	$(CC) -std=gnu99 -c $(CFLAGS) $(INCLUDE) $< -o $@
 
 $(PROGNAME): $(OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) $^ -o $@
 
 install: all
 	mkdir -p $(DESTDIR)/$(BINDIR) $(DESTDIR)/$(MANDIR)
