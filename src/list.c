@@ -81,7 +81,7 @@ void list_reverse(list_t * list)
 
 void list_node_free(list_node_t * node, void (*free_data)(void *node_data))
 {
-	if ((*free_data) != NULL && node != NULL) {
+	if (free_data != NULL && node != NULL) {
 		 (*free_data)(node->data);
 	}
 

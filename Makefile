@@ -22,7 +22,7 @@ all: $(PROGNAME)
 
 $(OUTDIR)/%.o: src/%.c $(HEADERS)
 	@mkdir -p $(OUTDIR)
-	$(CC) -std=gnu99 -c $(CFLAGS) $(INCLUDE) $< -o $@
+	$(CC) -std=c99 -c $(CFLAGS) $(INCLUDE) $< -o $@
 
 $(PROGNAME): $(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@

@@ -147,13 +147,15 @@ FILE *ensure_fopen(const char *filename, const char *mode)
 char *get_config_location()
 {
 	char *config_home = getenv("XDG_CONFIG_HOME");
+
 	if (config_home == NULL) {
 		char *homedir = getenv(EHOME);
+
 #ifdef __APPLE__
 		char *subdir = "/Library/Application Support";
 #elif EPLAN9
 		char *subdir = "/lib";
-#else // UNIX
+#else							// UNIX
 		char *subdir = "/.config";
 #endif
 		config_home = calloc(strlen(homedir) + strlen(subdir) + 1, sizeof(char));
@@ -161,6 +163,7 @@ char *get_config_location()
 	}
 
 	char *loc = calloc(strlen(config_home) + strlen(CONFIG_LOCATION) + 1, sizeof(char));
+
 	sprintf(loc, "%s%s", config_home, CONFIG_LOCATION);
 
 	return loc;

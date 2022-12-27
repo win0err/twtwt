@@ -19,6 +19,18 @@ extern char *strdup(const char *);
 extern char *strptime(const char *, const char *, struct tm *);
 extern void tzset(void);
 
+static time_t get_local_tz_offset()
+{
+	time_t rawtime = time(0);
+
+	struct tm *ptm = gmtime(&rawtime);
+	time_t gmt = mktime(ptm);
+
+	ptm = localtime(&rawtime);
+
+	return rawtime - gmt + (ptm->tm_isdst ? 3600 : 0);
+}
+
 char *localtime_to_rfc3339_local(const struct tm *timeptr)
 {
 	char *buff = calloc(LOCAL_FMT_LEN + 1, sizeof(char));
@@ -106,8 +118,5 @@ time_t rfc3339_to_time_t(const char *formatted)
 	free(buff);
 	free(datetime);
 
-	time_t rawtime = time(0);
-	time_t local_tzoff = timegm(localtime(&rawtime)) - rawtime;
-
-	return result != -1 ? result - gmtoff + local_tzoff : -1;
+	return result != -1 ? result - gmtoff + get_local_tz_offset() : -1;
 }
