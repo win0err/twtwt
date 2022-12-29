@@ -22,7 +22,10 @@ typedef struct tweet {
 	time_t time;
 } tweet_t;
 
-int twtxt_display_tweets(list_t * tweets, int page, int limit);
+int twtxt_display_tweets(list_t * tweets, list_t * following, int page, int limit);
 void tweet_free(void *node_data);
+
+char *mentions_expand(const char *src, list_t * following);
+char *mentions_shrink(const char *src, list_t * following);
 
 #endif

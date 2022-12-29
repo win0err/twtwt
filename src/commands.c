@@ -129,7 +129,7 @@ int command_timeline(config_t * config, int page, int limit)
 	list_t *timeline = list_merge_k_sorted(fetched_count, tweets, tweets_comparator_asc);
 
 	if (timeline != NULL) {
-		twtxt_display_tweets(timeline, page, limit);
+		twtxt_display_tweets(timeline, config->following, page, limit);
 		list_free(timeline, tweet_free);
 	}
 
@@ -167,7 +167,7 @@ int command_view(const char *url_or_nick, config_t * config, int page, int limit
 	list_t *tweets = fetch_user_tweets(found_user, config);
 
 	if (tweets != NULL) {
-		twtxt_display_tweets(tweets, page, limit);
+		twtxt_display_tweets(tweets, config->following, page, limit);
 		list_free(tweets, tweet_free);
 	}
 
@@ -181,9 +181,6 @@ int command_view(const char *url_or_nick, config_t * config, int page, int limit
 
 int command_tweet(const char *tweet, config_t * config)
 {
-	// TODO: need to expand mentions, e.g.:
-	// @win0err -> @<win0err https://kolesnikov.se/twtxt.txt>
-
 	FILE *fp = ensure_fopen(config->twtfile, "a");
 
 	if (fp == NULL) {
@@ -195,6 +192,7 @@ int command_tweet(const char *tweet, config_t * config)
 	int hook_retcode = 0;
 
 	if (config->pre_tweet_hook != NULL) {
+		puts(config->pre_tweet_hook);
 		hook_retcode = system(config->pre_tweet_hook);
 
 		if (hook_retcode != 0) {
@@ -206,16 +204,18 @@ int command_tweet(const char *tweet, config_t * config)
 	}
 
 	time_t now = time(NULL);
-
 	char *formatted_time = localtime_to_rfc3339_local(localtime(&now));
+	char *text = mentions_expand(tweet, config->following);
 
-	fprintf(fp, "%s\t%s\n", formatted_time, tweet);
+	fprintf(fp, "%s\t%s\n", formatted_time, text);
 
+	free(text);
 	free(formatted_time);
 
 	fclose(fp);
 
 	if (config->post_tweet_hook != NULL) {
+		puts(config->post_tweet_hook);
 		hook_retcode = system(config->post_tweet_hook);
 
 		if (hook_retcode != 0) {
