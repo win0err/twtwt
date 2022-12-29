@@ -1,5 +1,5 @@
 PROGNAME=twtwt
-VERSION?=0.0.1
+VERSION?=0.0.2
 
 CFLAGS+=-Wall -Wextra -Werror -Wno-unused-parameter -DVERSION='"$(VERSION)"'
 LDFLAGS+=-lcurl -linih # $(shell pkg-config --libs libcurl inih)
