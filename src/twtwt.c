@@ -130,11 +130,12 @@ int main(int argc, char *const *argv)
 		}
 	} else if (!strcmp(command, COMMAND_FILE)) {
 		if (params_count != 1) {
-			PRINT_COMMAND_USAGE(COMMAND_FILE, "<pull/push>", "subcommand is required");
+			PRINT_COMMAND_USAGE(COMMAND_FILE, "<edit/pull/push>", "subcommand is required");
 
 			rc = EXIT_FAILURE;
-		} else if (strcmp(argv[optind], "pull") != 0 && strcmp(argv[optind], "push") != 0) {
-			PRINT_COMMAND_USAGE(COMMAND_FILE, "<pull/push>", "wrong subcommand");
+		} else if (strcmp(argv[optind], "edit") != 0 && strcmp(argv[optind], "pull") != 0
+				   && strcmp(argv[optind], "push") != 0) {
+			PRINT_COMMAND_USAGE(COMMAND_FILE, "<edit/pull/push>", "wrong subcommand");
 
 			rc = EXIT_FAILURE;
 		} else {

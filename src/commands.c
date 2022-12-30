@@ -224,6 +224,22 @@ int command_file(const char *subcommand, config_t * config)
 		}
 
 		return twtxt_file_push(config);
+	} else if (!strcmp(subcommand, "edit")) {
+		char *editor = getenv("EDITOR");
+
+		if (editor == NULL) {
+			editor = DEFAULT_EDITOR;
+		}
+
+		char *args[] = { editor, config->twtfile, NULL };
+
+		if (execvp(editor, args) == -1) {
+			fprintf(stderr, "error: cannot run editor %s %s\n", editor, config->twtfile);
+
+			return EXIT_FAILURE;
+		}
+
+		return EXIT_SUCCESS;
 	}
 
 	return EXIT_FAILURE;
