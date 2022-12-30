@@ -24,7 +24,7 @@
         "\n"                                                               \
         "Commands: \n"                                                     \
         "  config    - edit " PROGNAME " config file \n"                   \
-        "  file      - pull or push twtxt.txt file \n"                     \
+        "  file      - edit, pull or push twtxt.txt file \n"               \
         "  follow    - add a new source to your followings \n"             \
         "  following - show the list of sources you are following \n"      \
         "  timeline  - retrieve your personal timeline \n"                 \
