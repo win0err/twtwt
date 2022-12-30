@@ -14,8 +14,8 @@ typedef struct {
 	char *nick;
 	char *twtfile;
 	char *twturl;
-	char *pre_tweet_hook;
-	char *post_tweet_hook;
+	char *pull_command;
+	char *push_command;
 	list_t *following;
 } config_t;
 
