@@ -11,6 +11,7 @@
 #define COMMAND_UNFOLLOW "unfollow"
 #define COMMAND_FOLLOWING "following"
 #define COMMAND_VIEW "view"
+#define COMMAND_FILE "file"
 
 #ifndef DEFAULT_EDITOR
 #define DEFAULT_EDITOR "nano"
@@ -23,5 +24,6 @@ int command_unfollow(const char *nick, config_t * config);
 int command_timeline(config_t * config, int page, int limit);
 int command_view(const char *url_or_nick, config_t * config, int page, int limit);
 int command_tweet(const char *tweet, config_t * config);
+int command_file(const char *subcommand, config_t * config);
 
 #endif

@@ -10,6 +10,7 @@
 #include "network.h"
 #include "rfc3339.h"
 #include "tweet.h"
+#include "twtwt.h"
 #include "utils.h"
 
 extern char *strdup(const char *);
@@ -179,6 +180,55 @@ int command_view(const char *url_or_nick, config_t * config, int page, int limit
 	return EXIT_SUCCESS;
 }
 
+int twtxt_file_pull(config_t * config)
+{
+	puts(config->pull_command);
+
+	int rc = system(config->pull_command);
+
+	if (rc != 0) {
+		fprintf(stderr, "error: failed to pull twtxt.txt file, return code: %d\n", rc);
+	}
+
+	return rc;
+}
+
+int twtxt_file_push(config_t * config)
+{
+	puts(config->push_command);
+
+	int rc = system(config->push_command);
+
+	if (rc != 0) {
+		fprintf(stderr, "error: failed to push twtxt.txt file, return code: %d\n", rc);
+	}
+
+	return rc;
+}
+
+int command_file(const char *subcommand, config_t * config)
+{
+	if (!strcmp(subcommand, "pull")) {
+		if (config->pull_command == NULL) {
+			fprintf(stderr, "error: pull_command is not defined. try to run " PROGNAME " " COMMAND_CONFIG "\n");
+
+			return EXIT_FAILURE;
+		}
+
+		return twtxt_file_pull(config);
+	} else if (!strcmp(subcommand, "push")) {
+		if (config->push_command == NULL) {
+			fprintf(stderr, "error: push_command is not defined. try to run " PROGNAME " " COMMAND_CONFIG "\n");
+
+			return EXIT_FAILURE;
+		}
+
+		return twtxt_file_push(config);
+	}
+
+	return EXIT_FAILURE;
+}
+
 int command_tweet(const char *tweet, config_t * config)
 {
 	FILE *fp = ensure_fopen(config->twtfile, "a");
@@ -189,17 +239,13 @@ int command_tweet(const char *tweet, config_t * config)
 		return EXIT_FAILURE;
 	}
 
-	int hook_retcode = 0;
+	int rc = 0;
 
-	if (config->pre_tweet_hook != NULL) {
-		puts(config->pre_tweet_hook);
-		hook_retcode = system(config->pre_tweet_hook);
-
-		if (hook_retcode != 0) {
-			fprintf(stderr, "error: failed to run pre_tweet_hook, return code: %d\n", hook_retcode);
+	if (config->pull_command != NULL) {
+		if ((rc = twtxt_file_pull(config)) != 0) {
 			fclose(fp);
 
-			return EXIT_FAILURE;
+			return rc;
 		}
 	}
 
@@ -214,14 +260,11 @@ int command_tweet(const char *tweet, config_t * config)
 
 	fclose(fp);
 
-	if (config->post_tweet_hook != NULL) {
-		puts(config->post_tweet_hook);
-		hook_retcode = system(config->post_tweet_hook);
+	if (config->push_command != NULL) {
+		if ((rc = twtxt_file_push(config)) != 0) {
+			fclose(fp);
 
-		if (hook_retcode != 0) {
-			fprintf(stderr, "error: failed to run post_tweet_hook, return code: %d\n", hook_retcode);
-
-			return EXIT_FAILURE;
+			return rc;
 		}
 	}
 

@@ -30,10 +30,10 @@ static int handler(void *cfg, const char *section, const char *key, const char *
 			cgfptr->twtfile = strdup(value);
 		} else if (!strcmp(key, "twturl")) {
 			cgfptr->twturl = strdup(value);
-		} else if (!strcmp(key, "pre_tweet_hook")) {
-			cgfptr->pre_tweet_hook = strdup(value);
-		} else if (!strcmp(key, "post_tweet_hook")) {
-			cgfptr->post_tweet_hook = strdup(value);
+		} else if (!strcmp(key, "pull_command")) {
+			cgfptr->pull_command = strdup(value);
+		} else if (!strcmp(key, "push_command")) {
+			cgfptr->push_command = strdup(value);
 		} else {
 			return 0;
 		}
@@ -103,10 +103,10 @@ int config_save(config_t * cfg)
 	fprintf(fp, "nick = %s\n", cfg->nick);
 	fprintf(fp, "twtfile = %s\n", cfg->twtfile);
 	fprintf(fp, "twturl = %s\n", cfg->twturl);
-	if (cfg->pre_tweet_hook != NULL)
-		fprintf(fp, "pre_tweet_hook = %s\n", cfg->pre_tweet_hook);
-	if (cfg->post_tweet_hook != NULL)
-		fprintf(fp, "post_tweet_hook = %s\n", cfg->post_tweet_hook);
+	if (cfg->pull_command != NULL)
+		fprintf(fp, "pull_command = %s\n", cfg->pull_command);
+	if (cfg->push_command != NULL)
+		fprintf(fp, "push_command = %s\n", cfg->push_command);
 	fprintf(fp, "\n");
 	fprintf(fp, "[following]\n");
 
@@ -155,10 +155,10 @@ void config_free(config_t * cfg)
 		free((void *) cfg->twtfile);
 	if (cfg->twturl)
 		free((void *) cfg->twturl);
-	if (cfg->pre_tweet_hook)
-		free((void *) cfg->pre_tweet_hook);
-	if (cfg->post_tweet_hook)
-		free((void *) cfg->post_tweet_hook);
+	if (cfg->pull_command)
+		free((void *) cfg->pull_command);
+	if (cfg->push_command)
+		free((void *) cfg->push_command);
 	if (cfg->following)
 		list_free(cfg->following, user_free);
 

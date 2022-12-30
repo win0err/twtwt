@@ -128,6 +128,18 @@ int main(int argc, char *const *argv)
 		} else {
 			rc = command_view(argv[optind], config, page, limit);
 		}
+	} else if (!strcmp(command, COMMAND_FILE)) {
+		if (params_count != 1) {
+			PRINT_COMMAND_USAGE(COMMAND_FILE, "<pull/push>", "subcommand is required");
+
+			rc = EXIT_FAILURE;
+		} else if (strcmp(argv[optind], "pull") != 0 && strcmp(argv[optind], "push") != 0) {
+			PRINT_COMMAND_USAGE(COMMAND_FILE, "<pull/push>", "wrong subcommand");
+
+			rc = EXIT_FAILURE;
+		} else {
+			rc = command_file(argv[optind], config);
+		}
 	} else {
 		fprintf(stderr, "error: %s: no such command or option\n", command);
 
