@@ -276,13 +276,8 @@ int command_tweet(const char *tweet, config_t * config)
 
 	fclose(fp);
 
-	if (config->push_command != NULL) {
-		if ((rc = twtxt_file_push(config)) != 0) {
-			fclose(fp);
-
-			return rc;
-		}
-	}
+	if (config->push_command != NULL)
+		return twtxt_file_push(config);
 
 	return EXIT_SUCCESS;
 }
