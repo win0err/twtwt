@@ -34,5 +34,42 @@ make PREFIX=/usr install  # may require superuser privileges
 sudo make uninstall
 ```
 
+## Configuration
+
+Config can be edited using `twtwt config` command.
+
+Locations of the configuration file:
+- macOS: `~/Library/Application Support/twtwt/twtwt.conf`
+- Linux/BSD: `~/.config/twtwt/twtwt.conf`
+
+Example of a configuration file:
+```ini
+[twtxt]
+nick = win0err
+twtfile = ~/twtxt.txt
+twturl = https://kolesnikov.se/twtxt.txt
+pull_command = scp twtwt@kolesnikov.se:/path/on/remote/server/twtxt.txt ~/twtxt.txt
+push_command = scp ~/twtxt.txt twtwt@kolesnikov.se:/path/on/remote/server/twtxt.txt
+
+[following]
+win0err = https://kolesnikov.se/twtxt.txt
+```
+
+### Options
+
+`pull_command` and `push_command` are very useful if you want to push your twtxt file to a remote (web) server.
+
+#### `[twtxt]` section
+
+- `nick`: your nick, will be displayed in your timeline
+- `twtfile`: path to your local twtxt file
+- `twturl`: URL to your public twtxt file
+- `pull_command`: command to be executed before tweeting and when running command `twtwt file pull`
+- `push_command`: command to be executed after tweeting and when running command `twtwt file push`
+
+#### `[following]` section
+
+This section holds all your followings as nick and URL pairs. You can edit this section manually or use the `follow`/`unfollow` commands.
+
 ---
 _Developed by [Sergei Kolesnikov](https://github.com/win0err)_
