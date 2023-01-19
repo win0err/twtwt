@@ -1,5 +1,6 @@
 PROGNAME=twtwt
-VERSION?=0.0.4
+COMMITS_COUNT=$(shell git rev-list --count HEAD)
+VERSION?=0.0.$(COMMITS_COUNT)
 
 CFLAGS+=-Wall -Wextra -Werror -Wno-unused-parameter -DVERSION='"$(VERSION)"'
 LDFLAGS+=-lcurl -linih # $(shell pkg-config --libs libcurl inih)
