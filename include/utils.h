@@ -1,6 +1,8 @@
 #ifndef _TWTWT_UTILS_H
 #define _TWTWT_UTILS_H
 
+#include "stdio.h"
+
 #ifdef EPLAN9
 #define EHOME "home"
 #else

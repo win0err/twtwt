@@ -2,7 +2,7 @@ PROGNAME=twtwt
 COMMITS_COUNT=$(shell git rev-list --count HEAD)
 VERSION?=0.0.$(COMMITS_COUNT)
 
-CFLAGS+=-Wall -Wextra -Werror -Wno-unused-parameter -DVERSION='"$(VERSION)"'
+CFLAGS+=-Wall -Wextra -Werror -Wno-unused-parameter
 LDFLAGS+=-lcurl -linih # $(shell pkg-config --libs libcurl inih)
 INCLUDE+=-Iinclude
 OUTDIR=.build
@@ -19,11 +19,16 @@ ifeq ($(DEBUG),1)
 	override CFLAGS+=-DDEBUG=1 -g -O0
 endif
 
-all: $(PROGNAME)
+all: $(PROGNAME) compile_flags.txt
+
+compile_flags.txt: Makefile
+	true > $@
+	echo $(CFLAGS) >> $@
+	echo $(INCLUDE) >> $@
 
 $(OUTDIR)/%.o: src/%.c $(HEADERS)
 	@mkdir -p $(OUTDIR)
-	$(CC) -std=c99 -c $(CFLAGS) $(INCLUDE) $< -o $@
+	$(CC) -std=c99 -c $(CFLAGS) -DVERSION='"$(VERSION)"' $(INCLUDE) $< -o $@
 
 $(PROGNAME): $(OBJECTS)
 	$(CC) $(LDFLAGS) $^ -o $@

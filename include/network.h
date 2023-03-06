@@ -1,6 +1,7 @@
 #ifndef _TWTWT_NETWORK_H
 #define _TWTWT_NETWORK_H
 
+#include "config.h"
 #include "tweet.h"
 
 struct twtxt_contents {
