@@ -31,7 +31,7 @@ make PREFIX=/usr install  # may require superuser privileges
 ### Uninstallation
 
 ```bash
-sudo make uninstall
+doas make uninstall  # note: doas is modern sudo
 ```
 
 
