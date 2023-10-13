@@ -21,7 +21,7 @@
 
 extern char *strdup(const char *);
 
-static void get_nick(config_t * config)
+static void get_nick(config_t *config)
 {
 	char *os_user = getenv("USER");
 	char *default_val = strdup((os_user == NULL) ? "anonymous" : os_user);
@@ -41,7 +41,7 @@ static void get_nick(config_t * config)
 	}
 }
 
-static void get_twtfile(config_t * config)
+static void get_twtfile(config_t *config)
 {
 	char *default_val = strdup(getenv(EHOME));
 	size_t len = strlen(default_val);
@@ -68,7 +68,7 @@ static void get_twtfile(config_t * config)
 	}
 }
 
-static void get_twturl(config_t * config)
+static void get_twturl(config_t *config)
 {
 	char *domain = "https://example.com/";
 	char *filename = basename(config->twtfile);
@@ -93,7 +93,7 @@ static void get_twturl(config_t * config)
 	}
 }
 
-static int create_twtxt_file(config_t * config)
+static int create_twtxt_file(config_t *config)
 {
 	FILE *fp = ensure_fopen(config->twtfile, "a");
 

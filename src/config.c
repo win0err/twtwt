@@ -61,7 +61,7 @@ config_t *config_new()
 	return cfg;
 }
 
-int config_load(config_t * cfg)
+int config_load(config_t *cfg)
 {
 	char *filename = get_config_location();
 	int result = ini_parse(filename, handler, cfg);
@@ -86,7 +86,7 @@ int config_load(config_t * cfg)
 	}
 }
 
-int config_save(config_t * cfg)
+int config_save(config_t *cfg)
 {
 	char *filename = get_config_location();
 
@@ -144,7 +144,7 @@ void user_free(void *node_data)
 	}
 }
 
-void config_free(config_t * cfg)
+void config_free(config_t *cfg)
 {
 	if (cfg == NULL)
 		return;

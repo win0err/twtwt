@@ -6,7 +6,7 @@
 
 #define DATETIME_FORMAT "%Y-%m-%dT%H:%M:%S%z"
 size_t DATETIME_FORMAT_LEN = strlen("2006-01-02T15:04:05Z07:00") + 1;
-size_t DATETIME_COLON_POS = strlen("2006-01-02T15:04:05Z07"); // len is a ":"'s position
+size_t DATETIME_COLON_POS = strlen("2006-01-02T15:04:05Z07");	// len is a ":"'s position
 
 #define DATETIME_PARSE_FORMAT "%Y-%m-%dT%H:%M:%S"
 
@@ -34,7 +34,7 @@ char *localtime_to_rfc3339_local(const struct tm *timeptr)
 	if (strftime(buff, DATETIME_FORMAT_LEN, DATETIME_FORMAT, timeptr)
 		&& buff[DATETIME_COLON_POS] != ':') {
 		// add colon in offset: +1234\0 -> +12:34\0
-		for (size_t i = DATETIME_FORMAT_LEN-1; i > DATETIME_COLON_POS; i--)
+		for (size_t i = DATETIME_FORMAT_LEN - 1; i > DATETIME_COLON_POS; i--)
 			buff[i] = buff[i - 1];
 
 		buff[DATETIME_COLON_POS] = ':';
@@ -71,7 +71,6 @@ time_t rfc3339_to_time_t(const char *formatted)
 				unparsed++;
 			} while (unparsed[0] >= '0' && unparsed[0] <= '9');
 		}
-
 		// now `unparsed` is formatted like "+12:45"
 
 		switch (unparsed[0]) {
@@ -89,8 +88,8 @@ time_t rfc3339_to_time_t(const char *formatted)
 		}
 
 		if (off_sign != 0) {
-			int off_hour = to_digit(unparsed[1])*10 + to_digit(unparsed[2]);
-			int off_min = to_digit(unparsed[4])*10 + to_digit(unparsed[5]);
+			int off_hour = to_digit(unparsed[1]) * 10 + to_digit(unparsed[2]);
+			int off_min = to_digit(unparsed[4]) * 10 + to_digit(unparsed[5]);
 
 			gmtoff = off_sign * 60 * (off_hour * 60 + off_min);
 		}

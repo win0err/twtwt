@@ -5,7 +5,7 @@
 
 #include "list.h"
 
-void list_node_print(list_node_t * node, void (*print_data)(void *node_data))
+void list_node_print(list_node_t *node, void (*print_data)(void *node_data))
 {
 	if (print_data != NULL) {
 		print_data(node->data);
@@ -15,7 +15,7 @@ void list_node_print(list_node_t * node, void (*print_data)(void *node_data))
 	printf("%p <~ %p ~> %p\n", (void *) node->prev, (void *) node, (void *) node->next);
 }
 
-void list_print(list_t * list, void (*print_data)(void *node_data))
+void list_print(list_t *list, void (*print_data)(void *node_data))
 {
 	printf("list_t:  %p\n", (void *) list);
 	printf("head:    %p\n", (void *) list->head);
@@ -42,7 +42,7 @@ list_t *list_new()
 	return list;
 }
 
-void list_free(list_t * list, void (*free_data)(void *node_data))
+void list_free(list_t *list, void (*free_data)(void *node_data))
 {
 	list_node_t *current = list->head;
 
@@ -59,7 +59,7 @@ void list_free(list_t * list, void (*free_data)(void *node_data))
 	free(list);
 }
 
-void list_reverse(list_t * list)
+void list_reverse(list_t *list)
 {
 	list_node_t *current = list->head;
 	list_node_t *temp;
@@ -79,7 +79,7 @@ void list_reverse(list_t * list)
 	list->tail = temp;
 }
 
-void list_node_free(list_node_t * node, void (*free_data)(void *node_data))
+void list_node_free(list_node_t *node, void (*free_data)(void *node_data))
 {
 	if (free_data != NULL && node != NULL) {
 		 (*free_data)(node->data);
@@ -108,7 +108,7 @@ list_node_t *list_node_new(void *data)
 	return node;
 }
 
-void list_node_insert_after(list_t * list, list_node_t * current, list_node_t * new)
+void list_node_insert_after(list_t *list, list_node_t *current, list_node_t *new)
 {
 	assert(list != NULL);
 	assert(new != NULL);
@@ -137,7 +137,7 @@ void list_node_insert_after(list_t * list, list_node_t * current, list_node_t * 
 	list->count += 1;
 }
 
-void list_node_insert_before(list_t * list, list_node_t * current, list_node_t * new)
+void list_node_insert_before(list_t *list, list_node_t *current, list_node_t *new)
 {
 	assert(list != NULL);
 	assert(new != NULL);
@@ -166,7 +166,7 @@ void list_node_insert_before(list_t * list, list_node_t * current, list_node_t *
 	list->count += 1;
 }
 
-list_node_t *list_node_detach(list_t * list, list_node_t * node)
+list_node_t *list_node_detach(list_t *list, list_node_t *node)
 {
 	assert(list != NULL);
 	assert(node != NULL);
@@ -191,7 +191,7 @@ list_node_t *list_node_detach(list_t * list, list_node_t * node)
 	return node;
 }
 
-static list_node_t *merge_nodes(list_t * list, const list_node_t * node1, const list_node_t * node2,
+static list_node_t *merge_nodes(list_t *list, const list_node_t *node1, const list_node_t *node2,
 								long (*comparator)(void *node1_data, void *node2_data))
 {
 	list_node_t *min = list_node_new(NULL);
@@ -240,8 +240,8 @@ static list_node_t *merge_nodes(list_t * list, const list_node_t * node1, const 
 	return min;
 }
 
-list_t *list_merge_sorted(const list_t * list1,
-						  const list_t * list2, long (*comparator)(void *node1_data, void *node2_data))
+list_t *list_merge_sorted(const list_t *list1,
+						  const list_t *list2, long (*comparator)(void *node1_data, void *node2_data))
 {
 	list_t *sorted = list_new();
 
@@ -250,7 +250,7 @@ list_t *list_merge_sorted(const list_t * list1,
 	return sorted;
 }
 
-list_t *list_merge_k_sorted(int amount, list_t ** lists, long (*comparator)(void *node1_data, void *node2_data))
+list_t *list_merge_k_sorted(int amount, list_t **lists, long (*comparator)(void *node1_data, void *node2_data))
 {
 	int interval = 1;
 
@@ -266,7 +266,7 @@ list_t *list_merge_k_sorted(int amount, list_t ** lists, long (*comparator)(void
 	return amount > 0 ? lists[0] : NULL;
 }
 
-list_node_t *list_search(const list_t * list, int (*is_target)(void *node_data))
+list_node_t *list_search(const list_t *list, int (*is_target)(void *node_data))
 {
 	list_node_t *current;
 

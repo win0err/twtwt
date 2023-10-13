@@ -41,7 +41,7 @@ int command_config()
 	return EXIT_SUCCESS;
 }
 
-int command_following(list_t * following)
+int command_following(list_t *following)
 {
 	list_node_t *node = NULL;
 	user_t *user = NULL;
@@ -57,7 +57,7 @@ int command_following(list_t * following)
 	return EXIT_SUCCESS;
 }
 
-int command_follow(const char *nick, const char *url, config_t * config)
+int command_follow(const char *nick, const char *url, config_t *config)
 {
 	user_t *new_user = (user_t *) malloc(sizeof(user_t));
 
@@ -92,7 +92,7 @@ int command_follow(const char *nick, const char *url, config_t * config)
 	return EXIT_SUCCESS;
 }
 
-int command_unfollow(const char *nick, config_t * config)
+int command_unfollow(const char *nick, config_t *config)
 {
 	list_node_t *node, *unfollowed = NULL;
 	user_t *user = NULL;
@@ -119,7 +119,7 @@ int command_unfollow(const char *nick, config_t * config)
 	return config_save(config);
 }
 
-int command_timeline(config_t * config, int page, int limit)
+int command_timeline(config_t *config, int page, int limit)
 {
 	int fetched_count;
 
@@ -141,7 +141,7 @@ int command_timeline(config_t * config, int page, int limit)
 	return EXIT_SUCCESS;
 }
 
-int command_view(const char *url_or_nick, config_t * config, int page, int limit)
+int command_view(const char *url_or_nick, config_t *config, int page, int limit)
 {
 	user_t *found_user = NULL;
 	int is_user_found = 0;
@@ -180,7 +180,7 @@ int command_view(const char *url_or_nick, config_t * config, int page, int limit
 	return EXIT_SUCCESS;
 }
 
-int twtxt_file_pull(config_t * config)
+int twtxt_file_pull(config_t *config)
 {
 	puts(config->pull_command);
 
@@ -193,7 +193,7 @@ int twtxt_file_pull(config_t * config)
 	return rc;
 }
 
-int twtxt_file_push(config_t * config)
+int twtxt_file_push(config_t *config)
 {
 	puts(config->push_command);
 
@@ -206,7 +206,7 @@ int twtxt_file_push(config_t * config)
 	return rc;
 }
 
-int command_file(const char *subcommand, config_t * config)
+int command_file(const char *subcommand, config_t *config)
 {
 	if (!strcmp(subcommand, "pull")) {
 		if (config->pull_command == NULL) {
@@ -245,7 +245,7 @@ int command_file(const char *subcommand, config_t * config)
 	return EXIT_FAILURE;
 }
 
-int command_tweet(const char *tweet, config_t * config)
+int command_tweet(const char *tweet, config_t *config)
 {
 	FILE *fp = ensure_fopen(config->twtfile, "a");
 

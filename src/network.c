@@ -22,7 +22,7 @@ extern char *strdup(const char *);
 
 static char *useragent = NULL;
 
-static void set_useragent(config_t * config)
+static void set_useragent(config_t *config)
 {
 	size_t len =
 		strlen(USERAGENT_FORMAT) + strlen(PROGNAME VERSION) + strlen(config->twturl) + strlen(config->nick) + 1;
@@ -94,7 +94,7 @@ static CURL *get_handle_from_content(struct twtxt_contents *content, int private
 	return handle;
 }
 
-static list_t *process_finished_request(CURL * handle, CURLcode result, struct twtxt_contents *twtxt)
+static list_t *process_finished_request(CURL *handle, CURLcode result, struct twtxt_contents *twtxt)
 {
 	long http_code;
 
@@ -119,7 +119,7 @@ static list_t *process_finished_request(CURL * handle, CURLcode result, struct t
 	return NULL;
 }
 
-static struct twtxt_contents *users_list_to_contents(list_t * users)
+static struct twtxt_contents *users_list_to_contents(list_t *users)
 {
 	struct twtxt_contents *contents = calloc(users->count, sizeof(struct twtxt_contents));
 
@@ -137,7 +137,7 @@ static struct twtxt_contents *users_list_to_contents(list_t * users)
 	return contents;
 }
 
-list_t *fetch_user_tweets(user_t * user, config_t * cfg)
+list_t *fetch_user_tweets(user_t *user, config_t *cfg)
 {
 	struct twtxt_contents content = {
 		.data = malloc(1),		// will be grown
@@ -159,7 +159,7 @@ list_t *fetch_user_tweets(user_t * user, config_t * cfg)
 	return tweets;
 }
 
-list_t **fetch_timeline_tweets(config_t * config, int *parsed_count)
+list_t **fetch_timeline_tweets(config_t *config, int *parsed_count)
 {
 	if (useragent == NULL) {
 		set_useragent(config);

@@ -16,7 +16,7 @@
 #define TW_BUFSIZE 512
 #define MIN(a, b) ((a < b) ? a : b)
 
-char *mentions_shrink(const char *src, list_t * following)
+char *mentions_shrink(const char *src, list_t *following)
 {
 	char *text = calloc(strlen(src) + 1, sizeof(char));
 
@@ -84,7 +84,7 @@ char *mentions_shrink(const char *src, list_t * following)
 	return text;
 }
 
-char *mentions_expand(const char *src, list_t * following)
+char *mentions_expand(const char *src, list_t *following)
 {
 	char *text = calloc(strlen(src) + 1, sizeof(char));
 
@@ -173,7 +173,7 @@ static void display_pagination_info(int current_page, int total_pages, int start
 	printf("%d of %d", end, total);
 }
 
-int twtxt_display_tweets(list_t * tweets, list_t * following, int page, int limit)
+int twtxt_display_tweets(list_t *tweets, list_t *following, int page, int limit)
 {
 	if (tweets == NULL)
 		return EXIT_FAILURE;
