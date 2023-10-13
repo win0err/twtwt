@@ -5,7 +5,9 @@ VERSION?=0.0.$(COMMITS_COUNT)
 PKG_CONFIG?=pkg-config
 LIBS:=libcurl inih
 
-CFLAGS+=-Wall -Wextra -Werror -Wno-unused-parameter
+CFLAGS_BASE=-Wall -Wextra -Werror -Wno-unused-parameter
+CFLAGS+=$(CFLAGS_BASE)
+
 LDFLAGS+=$(shell $(PKG_CONFIG) --libs $(LIBS))
 INCLUDE+=$(shell $(PKG_CONFIG) --cflags $(LIBS)) -Iinclude
 OUTDIR:=.build
@@ -24,9 +26,9 @@ endif
 
 all: $(PROGNAME) compile_flags.txt
 
-compile_flags.txt: Makefile
+compile_flags.txt: Makefile  # used for clangd's LSP server
 	true > $@
-	echo $(CFLAGS) >> $@
+	echo $(CFLAGS_BASE) >> $@
 	echo $(INCLUDE) >> $@
 
 $(OUTDIR):
