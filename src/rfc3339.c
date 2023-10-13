@@ -4,20 +4,16 @@
 
 #include "rfc3339.h"
 
-#define LOCAL_FMT "%Y-%m-%dT%H:%M:%S%z"
-#define LOCAL_FMT_LEN 26
+#define DATETIME_FORMAT "%Y-%m-%dT%H:%M:%S%z"
+size_t DATETIME_FORMAT_LEN = strlen("2006-01-02T15:04:05Z07:00") + 1;
+size_t DATETIME_COLON_POS = strlen("2006-01-02T15:04:05Z07"); // len is a ":"'s position
 
-#define UTC_FMT "%Y-%m-%dT%H:%M:%SZ"
-#define UTC_FMT_LEN 21
+#define DATETIME_PARSE_FORMAT "%Y-%m-%dT%H:%M:%S"
 
-#define DATETIME_PARSE_FORMAT "%Y-%m-%dT%H:%M:%S%z"
-
-#define OFFSET_COLON_POS 22
-#define OFFSET_POS 19			// +, - or Z
+#define to_digit(c) ((c) - '0')
 
 extern char *strdup(const char *);
 extern char *strptime(const char *, const char *, struct tm *);
-extern void tzset(void);
 
 static time_t get_local_tz_offset()
 {
@@ -33,14 +29,15 @@ static time_t get_local_tz_offset()
 
 char *localtime_to_rfc3339_local(const struct tm *timeptr)
 {
-	char *buff = calloc(LOCAL_FMT_LEN + 1, sizeof(char));
+	char *buff = calloc(DATETIME_FORMAT_LEN, sizeof(char));
 
-	if (strftime(buff, LOCAL_FMT_LEN, LOCAL_FMT, timeptr) && buff[OFFSET_COLON_POS] != ':') {
+	if (strftime(buff, DATETIME_FORMAT_LEN, DATETIME_FORMAT, timeptr)
+		&& buff[DATETIME_COLON_POS] != ':') {
 		// add colon in offset: +1234\0 -> +12:34\0
-		for (int i = LOCAL_FMT_LEN; i > OFFSET_COLON_POS; i--)
+		for (size_t i = DATETIME_FORMAT_LEN-1; i > DATETIME_COLON_POS; i--)
 			buff[i] = buff[i - 1];
 
-		buff[OFFSET_COLON_POS] = ':';
+		buff[DATETIME_COLON_POS] = ':';
 	}
 
 	return buff;
@@ -48,74 +45,59 @@ char *localtime_to_rfc3339_local(const struct tm *timeptr)
 
 char *gmtime_to_rfc3339_utc(const struct tm *timeptr)
 {
-	char *buff = calloc(UTC_FMT_LEN, sizeof(char));
+	char *buff = calloc(DATETIME_FORMAT_LEN, sizeof(char));
 
-	strftime(buff, UTC_FMT_LEN, UTC_FMT, timeptr);
+	strftime(buff, DATETIME_FORMAT_LEN, DATETIME_FORMAT, timeptr);
 
 	return buff;
 }
 
 time_t rfc3339_to_time_t(const char *formatted)
 {
-	tzset();					// to calculate timezone offset
-
 	struct tm *datetime = calloc(1, sizeof(struct tm));
 
-	char *buff = strdup(formatted);
-
-	buff[OFFSET_POS] = 0;		// 1999-08-28T13:45:59\0
-
-	if (strptime(buff, DATETIME_PARSE_FORMAT, datetime) != NULL) {
-		return -1;
-	}
+	// see: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+	char *unparsed = strptime(formatted, DATETIME_PARSE_FORMAT, datetime);
 
 	// we need to parse timezone offset manually
-	// because %z doesn't work as expected
+	// because %z doesn't support colon-separated format (12:43)
 	int off_sign = 1;
-	int off_hour = 0, off_min = 0;
-
-	free(buff);
-
-	size_t idx = OFFSET_POS;
-
-	buff = strdup(formatted);
-
-	// skip second's fractions
-	if (buff[idx] == '.' || buff[idx] == ',') {
-		do {
-			idx++;
-		} while (buff[idx] >= '0' && buff[idx] <= '9');
-	}
-
-	switch (buff[idx]) {
-	case '+':
-		off_sign = 1;
-		break;
-	case '-':
-		off_sign = -1;
-		break;
-	case 'Z':					// zero offset
-		off_sign = 0;
-		break;
-	default:
-		return -1;
-	}
-
 	int gmtoff = 0;
 
-	if (off_sign != 0) {
-		char off_hour_s[3] = { buff[idx + 1], buff[idx + 2], 0 };
-		off_hour = atoi(off_hour_s);
+	if (unparsed != NULL) {
+		// skip second's fractions (time-secfrac)
+		if (unparsed[0] == '.') {
+			do {
+				unparsed++;
+			} while (unparsed[0] >= '0' && unparsed[0] <= '9');
+		}
 
-		char off_min_s[3] = { buff[idx + 4], buff[idx + 5], 0 };
-		off_min = atoi(off_min_s);
+		// now `unparsed` is formatted like "+12:45"
 
-		gmtoff = off_sign * 60 * (off_hour * 60 + off_min);
+		switch (unparsed[0]) {
+		case '+':
+			off_sign = 1;
+			break;
+		case '-':
+			off_sign = -1;
+			break;
+		case 'Z':				// zero offset
+			off_sign = 0;
+			break;
+		default:
+			return -1;
+		}
+
+		if (off_sign != 0) {
+			int off_hour = to_digit(unparsed[1])*10 + to_digit(unparsed[2]);
+			int off_min = to_digit(unparsed[4])*10 + to_digit(unparsed[5]);
+
+			gmtoff = off_sign * 60 * (off_hour * 60 + off_min);
+		}
 	}
 
 	time_t result = mktime(datetime);
 
-	free(buff);
 	free(datetime);
 
 	return result != -1 ? result - gmtoff + get_local_tz_offset() : -1;
