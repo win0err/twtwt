@@ -32,9 +32,11 @@ compile_flags.txt: Makefile  # used for clangd's LSP server
 	echo $(INCLUDE) >> $@
 
 $(OUTDIR):
-	@mkdir -p "$@"
+	mkdir -p "$@"
 
-$(OUTDIR)/%.o: src/%.c $(HEADERS) $(OUTDIR)
+$(OBJECTS): | $(OUTDIR)
+
+$(OUTDIR)/%.o: src/%.c $(HEADERS)
 	$(CC) -std=c99 -c $(CFLAGS) -DVERSION='"$(VERSION)"' $(INCLUDE) $< -o $@
 
 $(PROGNAME): $(OBJECTS)
