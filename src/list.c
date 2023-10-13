@@ -254,6 +254,7 @@ list_t *list_merge_k_sorted(int amount, list_t ** lists, long (*comparator)(void
 {
 	int interval = 1;
 
+	// todo: optimal solution
 	while (interval < amount) {
 		for (int i = 0; i < amount - interval; i += interval * 2) {
 			lists[i] = list_merge_sorted(lists[i], lists[i + interval], comparator);
