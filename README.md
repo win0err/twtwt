@@ -6,13 +6,20 @@
 
 ### Dependencies
 
+#### Utilities
+
+`pkg-config`/`pkgconf` and GNU `make` are required for building using `Makefile`.
+
+#### Libraries
+
 `curl/curl.h` and `ini.h` headers are required for building twtwt from source.
 
-#### Packages
+##### Packages
 
 - Debian/Ubuntu: `libinih1 libinih-dev libcurl4 libcurl4-openssl-dev`
 - Fedora: `inih inih-devel libcurl libcurl-devel`
 - macOS: `curl inih`
+- FreeBSD: `curl inih`
 
 ### Installation
 
