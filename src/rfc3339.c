@@ -4,6 +4,9 @@
 
 #include "rfc3339.h"
 
+#define DATETIME_FORMAT_UTC "%Y-%m-%dT%H:%M:%SZ"
+size_t DATETIME_FORMAT_UTC_LEN = strlen("2006-01-02T15:04:05Z") + 1;
+
 #define DATETIME_FORMAT "%Y-%m-%dT%H:%M:%S%z"
 size_t DATETIME_FORMAT_LEN = strlen("2006-01-02T15:04:05Z07:00") + 1;
 size_t DATETIME_COLON_POS = strlen("2006-01-02T15:04:05Z07");	// len is a ":"'s position
@@ -22,9 +25,7 @@ static time_t get_local_tz_offset()
 	struct tm *ptm = gmtime(&rawtime);
 	time_t gmt = mktime(ptm);
 
-	ptm = localtime(&rawtime);
-
-	return rawtime - gmt + (ptm->tm_isdst ? 3600 : 0);
+	return rawtime - gmt;
 }
 
 char *localtime_to_rfc3339_local(const struct tm *timeptr)
@@ -45,9 +46,9 @@ char *localtime_to_rfc3339_local(const struct tm *timeptr)
 
 char *gmtime_to_rfc3339_utc(const struct tm *timeptr)
 {
-	char *buff = calloc(DATETIME_FORMAT_LEN, sizeof(char));
+	char *buff = calloc(DATETIME_FORMAT_UTC_LEN, sizeof(char));
 
-	strftime(buff, DATETIME_FORMAT_LEN, DATETIME_FORMAT, timeptr);
+	strftime(buff, DATETIME_FORMAT_UTC_LEN, DATETIME_FORMAT_UTC, timeptr);
 
 	return buff;
 }
