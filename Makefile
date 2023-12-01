@@ -40,7 +40,7 @@ $(OUTDIR)/%.o: src/%.c $(HEADERS)
 	$(CC) -std=c99 -c $(CFLAGS) -DVERSION='"$(VERSION)"' $(INCLUDE) $< -o $@
 
 $(PROGNAME): $(OBJECTS)
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $^ -o $@ $(LDFLAGS)
 
 install: all
 	mkdir -p $(DESTDIR)/$(BINDIR) $(DESTDIR)/$(MANDIR)
