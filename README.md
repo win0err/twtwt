@@ -18,8 +18,7 @@
 
 - Debian/Ubuntu: `libinih1 libinih-dev libcurl4 libcurl4-openssl-dev`
 - Fedora: `inih inih-devel libcurl libcurl-devel`
-- macOS: `curl inih`
-- FreeBSD: `curl inih`
+- macOS/BSD: `curl inih`
 
 ### Installation
 
@@ -39,6 +38,19 @@ make PREFIX=/usr install  # may require superuser privileges
 
 ```bash
 doas make uninstall  # note: doas is modern sudo
+```
+
+### Testing
+
+`check.h` are required for unit testing.
+
+##### Packages
+
+- Debian/Ubuntu/FreeBSD/macOS: `check`
+- Fedora: `check check-devel`
+
+```bash
+make test
 ```
 
 
