@@ -30,15 +30,20 @@ int command_config()
 		editor = DEFAULT_EDITOR;
 	}
 
-	char *args[] = { editor, config_location, NULL };
+	char *cmd = calloc(strlen(editor) + 1 + strlen(config_location) + 1, sizeof(char));
 
-	if (execvp(editor, args) == -1) {
-		fprintf(stderr, "error: cannot run editor %s %s\n", editor, config_location);
+	sprintf(cmd, "%s %s", editor, config_location);
 
-		return EXIT_FAILURE;
+	int retcode = system(cmd);
+
+	if (retcode != EXIT_SUCCESS) {
+		fprintf(stderr, "error: cannot run editor: %s\n", cmd);
+		retcode = EXIT_FAILURE;
 	}
 
-	return EXIT_SUCCESS;
+	free(cmd);
+
+	return retcode;
 }
 
 int command_following(list_t *following)
