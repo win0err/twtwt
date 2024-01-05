@@ -58,6 +58,12 @@ static list_t *parse_twtxt_content(struct twtxt_contents *twtxt)
 		line = strtok(NULL, DELIM);
 	}
 
+	tweet_t *first_tweet = (tweet_t *) tweets->head->data;
+	tweet_t *last_tweet = (tweet_t *) tweets->tail->data;
+
+	if (first_tweet->time > last_tweet->time)
+		list_reverse(tweets);
+
 	return tweets;
 }
 
